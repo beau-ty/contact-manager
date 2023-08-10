@@ -51,6 +51,7 @@ public class ContactsManagerProject {
 			}
 		} while (continueResponse);
 
+		return null;
 	}
 
 	public static void displayContacts() {
