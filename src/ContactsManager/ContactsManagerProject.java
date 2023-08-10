@@ -1,5 +1,7 @@
 package ContactsManager;
 
+import org.w3c.dom.ls.LSOutput;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -13,6 +15,8 @@ public class ContactsManagerProject {
 
 	public static Input input = new Input();
 
+	public static ArrayList<Contact> contactList = new ArrayList<>();
+
 	public static int displayMenu() {
 		System.out.println("1. View contacts");
 		System.out.println("2. Add a new contact");
@@ -25,6 +29,39 @@ public class ContactsManagerProject {
 
 
 	}
+
+	public static void searchContacts() {
+		do {
+			System.out.println("Enter contact name");
+			String searchResponse = input.getString();
+			for (Contact contact : contactList) {
+				if (contact.getName().equalsIgnoreCase(searchResponse)){
+					System.out.println(contact.getName()+ "  ||  " + contact.getPhoneNumber());
+				}else {
+					System.out.println("Please enter a valid contact name.");
+				}
+			}
+		} while(true);
+
+	}
+
+	public static void displayContacts() {
+		System.out.println("Name || Phone Number");
+		for (Contact contact : contactList) {
+			System.out.println(contact.getName()+ "  ||  " + contact.getPhoneNumber());
+		}
+		System.out.println("\n\n======== End =========");
+	}
+
+	public static void addContact() {
+		System.out.println("Enter a new contact name: ");
+		String inputName = input.getString();
+		System.out.println("Enter a new contact phone number: ");
+		long inputNumber = input.getInt();
+		Contact newContact = new Contact(inputName, inputNumber);
+		contactList.add(newContact);
+	}
+
 
 
 	public static void createFile() {
@@ -61,6 +98,17 @@ public class ContactsManagerProject {
 
 
 	public static void initialize() {
+		readContactList();
+		displayMenu();
+		addContact();
+		addContact();
+		searchContacts();
+
+
+
+	}
+
+	public static void readContactList() {
 
 		try {
 			List<String> listOfContacts = Files.readAllLines(
@@ -74,15 +122,12 @@ public class ContactsManagerProject {
 			e.printStackTrace();
 		}
 
-
 	}
 
 
-
 	public static void main (String[]args){
-		createFile();
 		initialize();
-		displayMenu();
+
 
 	}
 
