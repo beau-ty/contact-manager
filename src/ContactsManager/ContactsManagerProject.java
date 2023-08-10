@@ -133,7 +133,7 @@ public class ContactsManagerProject {
 		displayContacts();
 		displayMenu();
 //		addContact();
-//		addContact();
+		addContact();
 		searchContacts();
 
 
