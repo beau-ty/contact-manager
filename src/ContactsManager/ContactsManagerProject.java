@@ -6,16 +6,15 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
+import java.nio.file.StandardOpenOption;
+import java.util.*;
 
 
 public class ContactsManagerProject {
 
-	public static Input input = new Input();
+	static ArrayList<Contact> contactList = new ArrayList<>();
 
-	public static ArrayList<Contact> contactList = new ArrayList<>();
+	public static Input input = new Input();
 
 	public static int displayMenu() {
 		System.out.println("1. View contacts");
@@ -30,25 +29,34 @@ public class ContactsManagerProject {
 
 	}
 
-	public static void searchContacts() {
+	public static String searchContacts() {
+		boolean continueResponse;
 		do {
-			System.out.println("Enter contact name");
+			System.out.println(contactList);
+			System.out.println("Search for a contact name.");
 			String searchResponse = input.getString();
 			for (Contact contact : contactList) {
-				if (contact.getName().equalsIgnoreCase(searchResponse)){
-					System.out.println(contact.getName()+ "  ||  " + contact.getPhoneNumber());
-				}else {
-					System.out.println("Please enter a valid contact name.");
+				if (contact.getName().equalsIgnoreCase(searchResponse)) {
+					System.out.println(contact.getName() + "  ||  " + contact.getPhoneNumber());
+					return contact.getName() + "  ||  " + contact.getPhoneNumber();
 				}
 			}
-		} while(true);
+			System.out.println("Contact was not found.");
+			System.out.println("Would you like to continue your search? (y/N)");
+			continueResponse = input.yesNo();
+			if (continueResponse) {
+
+			} else {
+				break;
+			}
+		} while (continueResponse);
 
 	}
 
 	public static void displayContacts() {
 		System.out.println("Name || Phone Number");
 		for (Contact contact : contactList) {
-			System.out.println(contact.getName()+ "  ||  " + contact.getPhoneNumber());
+			System.out.println(contact);
 		}
 		System.out.println("\n\n======== End =========");
 	}
@@ -59,9 +67,32 @@ public class ContactsManagerProject {
 		System.out.println("Enter a new contact phone number: ");
 		long inputNumber = input.getInt();
 		Contact newContact = new Contact(inputName, inputNumber);
+
+		Path p = Paths.get("data/contacts.txt");
+
+
 		contactList.add(newContact);
+
+		try{
+			Set<String> existingNames = new HashSet<>(Files.readAllLines(p));
+				if(!existingNames.contains(newContact.getName())){
+					Files.write(p, Collections.singletonList(newContact.getName() + "  ||  " + newContact.getPhoneNumber()), StandardOpenOption.APPEND);
+					existingNames.add(newContact.getName());
+				}
+		} catch (IOException e){
+			e.printStackTrace();
+		}
 	}
 
+	public static void deleteContact() {
+
+
+//		try {
+//            Files.delete(Paths.get());
+//        } catch (IOException e){
+//            e.printStackTrace();
+//        }
+	}
 
 
 	public static void createFile() {
@@ -99,9 +130,10 @@ public class ContactsManagerProject {
 
 	public static void initialize() {
 		readContactList();
+		displayContacts();
 		displayMenu();
-		addContact();
-		addContact();
+//		addContact();
+//		addContact();
 		searchContacts();
 
 
@@ -110,19 +142,17 @@ public class ContactsManagerProject {
 
 	public static void readContactList() {
 
+		Path p = Paths.get("data/contacts.txt");
+		List<String> textList = new ArrayList<>();
 		try {
-			List<String> listOfContacts = Files.readAllLines(
-					Paths.get("data/contacts.txt")
-			);
-
-			for (String contact : listOfContacts) {
-				System.out.println(contact);
-			}
+			textList = Files.readAllLines(p);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		System.out.println(textList);
 
 	}
+
 
 
 	public static void main (String[]args){

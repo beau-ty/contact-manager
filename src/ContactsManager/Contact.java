@@ -28,4 +28,8 @@ public class Contact {
 		this.phoneNumber = phoneNumber;
 	}
 
+	public String toString(){
+		return this.name + "  ||  " + this.phoneNumber;
+	}
+
 }
