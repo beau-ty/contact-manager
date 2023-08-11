@@ -52,7 +52,7 @@ public class ContactsManagerProject {
 	}
 
 	public static void displayContacts() {
-		System.out.println("Name || Phone Number");
+		System.out.println("Name II Phone Number");
 		for (Contact contact : contactList) {
 			System.out.println(contact);
 		}
@@ -100,17 +100,17 @@ public class ContactsManagerProject {
 		String deleteResponse = input.getString();
 		contactList.removeIf(contact -> contact.getName().equalsIgnoreCase(deleteResponse));
 		Path p = Paths.get("data/contacts.txt");
-		String nameToRemove = "";
+		String lineToRemove = "";
 		try{
-			Set<String> existingNames = new HashSet<>(Files.readAllLines(p));
-			for(String name : existingNames) {
-				if(name.contains(deleteResponse)) {
-					nameToRemove = name;
-
+			ArrayList<String> existingNames = new ArrayList<>(Files.readAllLines(p));
+			for(String line : existingNames) {
+				String[] lineArray = line.split("  II  ", 2);
+				String name = lineArray[0].toString();
+				if(name.trim().equalsIgnoreCase(deleteResponse)) {
+					lineToRemove = line;
 				}
-
 			}
-			existingNames.remove(nameToRemove);
+			existingNames.remove(lineToRemove);
 			Files.write(p, existingNames);
 		} catch (ConcurrentModificationException | IOException e){
 			e.printStackTrace();
