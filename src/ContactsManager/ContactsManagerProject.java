@@ -23,10 +23,7 @@ public class ContactsManagerProject {
 		System.out.println("4. Delete an existing contact");
 		System.out.println("5. Exit");
 		System.out.println("Enter an option (1, 2, 3, 4 or 5): ");
-		int userMenuResponse = input.getInt(1, 5);
-		return userMenuResponse;
-
-
+		 return input.getInt(1, 5);
 	}
 
 	public static String searchContacts() {
@@ -37,8 +34,8 @@ public class ContactsManagerProject {
 			String searchResponse = input.getString();
 			for (Contact contact : contactList) {
 				if (contact.getName().equalsIgnoreCase(searchResponse)) {
-					System.out.println(contact.getName() + "  ||  " + contact.getPhoneNumber());
-					return contact.getName() + "  ||  " + contact.getPhoneNumber();
+					System.out.println(contact.getName() + "  II  " + contact.getPhoneNumber());
+					return contact.getName() + "  II  " + contact.getPhoneNumber();
 				}
 			}
 			System.out.println("Contact was not found.");
@@ -74,7 +71,7 @@ public class ContactsManagerProject {
 		try{
 			Set<String> existingNames = new HashSet<>(Files.readAllLines(p));
 				if(!existingNames.contains(newContact.getName())){
-					Files.write(p, Collections.singletonList(newContact.getName() + "  ||  " + newContact.getPhoneNumber()), StandardOpenOption.APPEND);
+					Files.write(p, Collections.singletonList(newContact.getName() + "  II  " + newContact.getPhoneNumber()), StandardOpenOption.APPEND);
 					existingNames.add(newContact.getName());
 				}
 		} catch (IOException e){
@@ -87,9 +84,10 @@ public class ContactsManagerProject {
 		try{
 			Set<String> existingNames = new HashSet<>(Files.readAllLines(p));
 			for(Contact contact : contactList) {
-				if(!existingNames.contains(contact.getName())) {
-					Files.write(p, Collections.singletonList(contact.getName() + "  ||  " + contact.getPhoneNumber()), StandardOpenOption.APPEND);
-					existingNames.add(contact.getName());
+				String contactToString = contact.toString();
+				if(!existingNames.contains(contactToString)) {
+					Files.write(p, Collections.singletonList(contact.toString()), StandardOpenOption.APPEND);
+//					existingNames.add(contact.getName());
 				}
 			}
 		} catch (IOException e){
@@ -98,8 +96,26 @@ public class ContactsManagerProject {
 	}
 
 	public static void deleteContact() {
+		System.out.println("Enter the name of a contact you would like to delete: ");
+		String deleteResponse = input.getString();
+		contactList.removeIf(contact -> contact.getName().equalsIgnoreCase(deleteResponse));
+		Path p = Paths.get("data/contacts.txt");
+		String nameToRemove = "";
+		try{
+			Set<String> existingNames = new HashSet<>(Files.readAllLines(p));
+			for(String name : existingNames) {
+				if(name.contains(deleteResponse)) {
+					nameToRemove = name;
 
+				}
 
+			}
+			existingNames.remove(nameToRemove);
+			Files.write(p, existingNames);
+		} catch (ConcurrentModificationException | IOException e){
+			e.printStackTrace();
+		}
+	}
 
 
 	public static void createFile() {
@@ -137,14 +153,6 @@ public class ContactsManagerProject {
 
 	public static void initialize() {
 		readContactList();
-		displayContacts();
-		displayMenu();
-//		addContact();
-		addContact();
-		searchContacts();
-
-
-
 	}
 
 	public static void readContactList() {
@@ -160,17 +168,31 @@ public class ContactsManagerProject {
 			String[] initArray = entry.split("II", 2);
 			long parsedNumber = Long.parseLong(initArray[1].trim());
 			contactList.add(new Contact(initArray[0].trim(), parsedNumber));
-			System.out.println(contactList);
 		}
 
 	}
 
-
+public static void runApplication() {
+	initialize();
+		while (true){
+			int menuResponse = displayMenu();
+			if (menuResponse == 1) {
+				displayContacts();
+			} else if (menuResponse == 2) {
+				addContact();
+			} else if (menuResponse == 3) {
+				searchContacts();
+			} else if (menuResponse == 4) {
+				deleteContact();
+			} else if (menuResponse == 5) {
+				System.out.println("Bye, have a good time.");
+				break;
+			}
+		}
+		exitFunction();
+}
 
 	public static void main (String[]args){
-		initialize();
-
-
+	runApplication();
 	}
-
 }

@@ -29,7 +29,7 @@ public class Contact {
 	}
 
 	public String toString(){
-		return this.name + "  ||  " + this.phoneNumber;
+		return this.name + "  II  " + this.phoneNumber;
 	}
 
 }
