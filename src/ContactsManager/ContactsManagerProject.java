@@ -68,12 +68,9 @@ public class ContactsManagerProject {
 		System.out.println("Enter a new contact phone number: ");
 		long inputNumber = input.getInt();
 		Contact newContact = new Contact(inputName, inputNumber);
-
-		Path p = Paths.get("data/contacts.txt");
-
-
 		contactList.add(newContact);
 
+		Path p = Paths.get("data/contacts.txt");
 		try{
 			Set<String> existingNames = new HashSet<>(Files.readAllLines(p));
 				if(!existingNames.contains(newContact.getName())){
@@ -85,15 +82,24 @@ public class ContactsManagerProject {
 		}
 	}
 
+	public static void exitFunction() {
+		Path p = Paths.get("data/contacts.txt");
+		try{
+			Set<String> existingNames = new HashSet<>(Files.readAllLines(p));
+			for(Contact contact : contactList) {
+				if(!existingNames.contains(contact.getName())) {
+					Files.write(p, Collections.singletonList(contact.getName() + "  ||  " + contact.getPhoneNumber()), StandardOpenOption.APPEND);
+					existingNames.add(contact.getName());
+				}
+			}
+		} catch (IOException e){
+			e.printStackTrace();
+		}
+	}
+
 	public static void deleteContact() {
 
 
-//		try {
-//            Files.delete(Paths.get());
-//        } catch (IOException e){
-//            e.printStackTrace();
-//        }
-	}
 
 
 	public static void createFile() {
@@ -150,7 +156,12 @@ public class ContactsManagerProject {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		System.out.println(textList);
+		for(String entry : textList) {
+			String[] initArray = entry.split("II", 2);
+			long parsedNumber = Long.parseLong(initArray[1].trim());
+			contactList.add(new Contact(initArray[0].trim(), parsedNumber));
+			System.out.println(contactList);
+		}
 
 	}
 
