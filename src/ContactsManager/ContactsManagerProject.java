@@ -54,7 +54,15 @@ public class ContactsManagerProject {
 	public static void displayContacts() {
 		System.out.println("Name II Phone Number");
 		for (Contact contact : contactList) {
-			System.out.println(contact);
+//			System.out.println(contact);
+			String phoneNumberToString = Long.toString(contact.getPhoneNumber());
+			String formattedPhoneNumber = (phoneNumberToString.substring(0, 3) + "-" + phoneNumberToString.substring(3));
+			String finalPhoneNumber = formattedPhoneNumber.substring(0,7) + "-" + formattedPhoneNumber.substring(7);
+			if (phoneNumberToString.length() == 7) {
+				System.out.printf(contact.getName() + "  II  " + formattedPhoneNumber + "\n");
+			} else {
+				System.out.printf(contact.getName() + "  II  " + finalPhoneNumber + "\n");
+			}
 		}
 		System.out.println("\n\n======== End =========");
 	}
@@ -62,6 +70,17 @@ public class ContactsManagerProject {
 	public static void addContact() {
 		System.out.println("Enter a new contact name: ");
 		String inputName = input.getString();
+		for (Contact contact : contactList) {
+			if (inputName.equalsIgnoreCase(contact.getName())){
+				System.out.println("this name already exists would you like to enter another?(y/N)");
+				if (input.yesNo()){
+					System.out.println("Enter a new contact name: ");
+					inputName = input.getString();
+				}else {
+					displayMenu();
+				}
+			}
+		}
 		System.out.println("Enter a new contact phone number: ");
 		long inputNumber = input.getInt();
 		Contact newContact = new Contact(inputName, inputNumber);
