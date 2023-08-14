@@ -54,7 +54,6 @@ public class ContactsManagerProject {
 	public static void displayContacts() {
 		System.out.println("Name II Phone Number");
 		for (Contact contact : contactList) {
-//			System.out.println(contact);
 			String phoneNumberToString = Long.toString(contact.getPhoneNumber());
 			String formattedPhoneNumber = (phoneNumberToString.substring(0, 3) + "-" + phoneNumberToString.substring(3));
 			String finalPhoneNumber = formattedPhoneNumber.substring(0,7) + "-" + formattedPhoneNumber.substring(7);
@@ -106,7 +105,6 @@ public class ContactsManagerProject {
 				String contactToString = contact.toString();
 				if(!existingNames.contains(contactToString)) {
 					Files.write(p, Collections.singletonList(contact.toString()), StandardOpenOption.APPEND);
-//					existingNames.add(contact.getName());
 				}
 			}
 		} catch (IOException e){
